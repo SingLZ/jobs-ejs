@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+
+<h2><%= job ? 'Edit Job' : 'Add New Job' %></h2>
+
+<form method="POST" action="<%= job ? '/jobs/update/' + job._id : '/jobs' %>">
+  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+
+  <label for="company">Company:</label>
+  <input type="text" id="company" name="company" required value="<%= job ? job.company : '' %>" />
+  <br />
+
+  <label for="position">Position:</label>
+  <input type="text" id="position" name="position" required value="<%= job ? job.position : '' %>" />
+  <br />
+
+  <label for="status">Status:</label>
+  <select id="status" name="status" required>
+    <% ['Applied', 'Interviewing', 'Rejected', 'Offer'].forEach(statusOption => { %>
+      <option value="<%= statusOption %>" <%= job && job.status === statusOption ? 'selected' : '' %>><%= statusOption %></option>
+    <% }) %>
+  </select>
+  <br /><br />
+
+  <button type="submit"><%= job ? 'Update' : 'Add' %></button>
+</form>
+
+<%- include('partials/footer') %>

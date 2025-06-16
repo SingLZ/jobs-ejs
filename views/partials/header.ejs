@@ -2,6 +2,7 @@
 <% if (user) { %>
    <p>User <%= user.name %> is logged on.</p>
    <form method="POST" action="/sessions/logoff">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
    <button>Logoff</button>
    </form>
 <% } %>
@@ -20,3 +21,20 @@
     <% })
   } %>
 <hr />
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Job Listings</title>
+</head>
+<body>
+  <header>
+    <h1>Job Listing App</h1>
+    <nav>
+      <a href="/jobs">Jobs</a> | 
+      <a href="/jobs/new">Add Job</a>
+    </nav>
+    <hr />
+  </header>
+
