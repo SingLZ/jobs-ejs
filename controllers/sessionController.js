@@ -13,6 +13,7 @@ const registerDo = async (req, res, next) => {
   try {
     await User.create(req.body);
     return res.redirect("/");
+    return res.redirect("/");
   } catch (e) {
     if (e.constructor.name === "ValidationError") {
       parseVErr(e, req);
@@ -36,14 +37,12 @@ const logoff = (req, res) => {
 };
 
 const logonShow = (req, res) => {
-  if (req.user) {
-    return res.redirect("/");
-  }
- res.render("logon", { 
-    csrf: req.signedCookies.csrfToken, // <- pass CSRF here
-    errors: req.flash("error")
+  console.log("Rendering logon page with errors:", res.locals.errors);
+  res.render("logon", {
+    csrfToken: req.csrfToken(),
   });
 };
+
 
 
 module.exports = {

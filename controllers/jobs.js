@@ -3,14 +3,14 @@ const Job = require('../models/jobs.js');
 exports.getJobs = async (req, res, next) => {
   try {
     const jobs = await Job.find({ createdBy: req.user._id });
-    res.render('jobs', { jobs, csrfToken: req.signedCookies.csrfToken });
+    res.render('jobs', { jobs});
   } catch (err) {
     next(err);
   }
 };
 
 exports.getNewJobForm = (req, res) => {
-  res.render('job', { job: null, csrfToken: req.signedCookies.csrfToken });
+  res.render('job', { job: null});
 };
 
 exports.createJob = async (req, res, next) => {
@@ -27,7 +27,7 @@ exports.getEditJobForm = async (req, res, next) => {
   try {
     const job = await Job.findOne({ _id: req.params.id, createdBy: req.user._id });
     if (!job) return res.status(404).send('Job not found');
-    res.render('job', { job, csrfToken: req.signedCookies.csrfToken });
+    res.render('job', { job });
   } catch (err) {
     next(err);
   }

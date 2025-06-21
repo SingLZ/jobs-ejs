@@ -1,7 +1,7 @@
 const express = require("express");
 require("express-async-errors");
 const cookieParser = require("cookie-parser");
-const csrf = require('host-csrf')
+const csurf = require('csurf');
 require("dotenv").config(); 
 
 
@@ -50,19 +50,26 @@ app.use(passport.session());
 app.use(require("connect-flash")()); 
 
 
-app.use(csrf({ cookieSecret: process.env.SESSION_SECRET }));
+app.use(csurf({ cookie: true }));
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 
 app.use(require("./middleware/storeLocals"));
 
+
 app.get("/test-csrf", (req, res) => {
-  console.log("CSRF token cookie:", req.signedCookies.csrfToken);
-  res.send("CSRF token cookie is set? Check console.");
+  res.send(`CSRF token is: ${res.locals.csrfToken}`);
 });
 
 
 app.get("/", (req, res) => {
   res.render("index");
 });
+
 app.use("/sessions", require("./routes/sessionRoutes"));
 
 
@@ -82,6 +89,9 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  if (err.code === "EBADCSRFTOKEN") {
+    return res.status(403).send("Invalid CSRF token.");
+  }
   res.status(500).send(err.message);
   console.log(err);
 });

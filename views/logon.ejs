@@ -1,8 +1,14 @@
 <%- include("partials/head.ejs") %>
 <%- include("partials/header.ejs") %>
-
+<% if (errors && errors.length > 0) { %>
+  <div class="error">
+    <% errors.forEach(function(error) { %>
+      <p><%= error %></p>
+    <% }) %>
+  </div>
+<% } %>
 <form method="POST" action="/sessions/logon">
-  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
   <div>
     <label for="email">Enter your email:</label>
