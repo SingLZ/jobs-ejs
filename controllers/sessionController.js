@@ -2,16 +2,17 @@ const User = require("../models/User");
 const parseVErr = require("../util/parseValidationErr.js");
 
 const registerShow = (req, res) => {
-  res.render("register");
+  res.render("register", { errors: req.flash("error"), csrf: req.signedCookies.csrfToken});
 };
 
 const registerDo = async (req, res, next) => {
   if (req.body.password != req.body.password1) {
     req.flash("error", "The passwords entered do not match.");
-    return res.render("register", {  errors: req.flash("error") });
+    return res.render("register", {  errors: req.flash("error")});
   }
   try {
     await User.create(req.body);
+    return res.redirect("/");
     return res.redirect("/");
   } catch (e) {
     if (e.constructor.name === "ValidationError") {
@@ -21,8 +22,9 @@ const registerDo = async (req, res, next) => {
     } else {
       return next(e);
     }
-    return res.render("register", {  errors: req.flash("error") });
+    return res.render("register", {  errors: req.flash("error")});
   }
+
 };
 
 const logoff = (req, res) => {
@@ -35,11 +37,12 @@ const logoff = (req, res) => {
 };
 
 const logonShow = (req, res) => {
-  if (req.user) {
-    return res.redirect("/");
-  }
-  res.render("logon");
+  console.log("Rendering logon page with errors:", res.locals.errors);
+  res.render("logon", {
+    csrfToken: req.csrfToken(),
+  });
 };
+
 
 
 module.exports = {
